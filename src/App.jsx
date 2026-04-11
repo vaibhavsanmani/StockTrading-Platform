@@ -7,6 +7,7 @@ import ProductPage from './landing_page/products/ProductsPage';
 import Navbar from './landing_page/Navbar';
 import NotFound from './landing_page/NotFound';
 import SupportPage from './landing_page/support/SupportPage';
+import PricingPage from './landing_page/pricing/PricingPage';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/support" element={<SupportPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       <Footer/>

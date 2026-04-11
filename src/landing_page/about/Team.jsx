@@ -1,7 +1,7 @@
 import React from 'react'
 function Team() {
     return ( 
-         <div className="container">
+         <div className="container mb-5 mt-5">
             <div className="row">
                 <h4 className=' mb-5 text-center'>People</h4>
                 <div className="col-1"></div>
