@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer() {
     return (  
-        <footer className='pt-4 pb-4' style={{backgroundColor:"#535252"}}>
+        <footer className='pt-4 pb-4' style={{backgroundColor:"#D3D3D3"}}>
         <div className="container mt-5 mb-5 footerBack" >
             <div className="row">
                 <div className="col">
