@@ -9,7 +9,12 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/*" element={<Home />} />
+        <Route path="/dashboard/*" element={
+          <ProtectedRoute>
+          <Dashboard />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

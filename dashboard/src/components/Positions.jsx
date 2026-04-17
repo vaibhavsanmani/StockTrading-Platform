@@ -1,6 +1,19 @@
-import React from "react";
-import { positions } from "../data/data";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 const Positions = () => {
+  const [positions, setPositions] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://127.0.0.1:3002/allpositions")
+      .then((res) => {
+        console.log(res.data);
+        setPositions(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   return (
     <>
       <h3 className="title">Positions ({positions.length})</h3>
@@ -28,8 +41,8 @@ const Positions = () => {
                           <td>{stock.product}</td>
                           <td>{stock.name}</td>
                           <td>{stock.qty}</td>
-                          <td>{stock.avg.toFixed(2)}</td>
-                          <td>{stock.price.toFixed(2)}</td>
+                          <td>{stock.avg?.toFixed(2)}</td>
+                          <td>{stock.price?.toFixed(2)}</td>
                           
                           <td className={profClass}>
                             {((currValue - stock.avg * stock.qty).toFixed(2))}

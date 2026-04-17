@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
+function Login() {
+  const navigate = useNavigate();
 
-
-function Signup() {
-    const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: ""
   });
@@ -16,52 +14,49 @@ function Signup() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSignup = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       const res = await axios.post(
-        "http://localhost:3002/api/auth/signup",
+        "http://localhost:3002/api/auth/login",
         form
       );
-      alert(res.data.message);
-      navigate("/");
+
+      localStorage.setItem("token", res.data.token);
+
+      alert("Login successful");
+
+      navigate("/dashboard");
+
     } catch (err) {
       alert(err.response?.data?.message || "Error");
     }
   };
 
   return (
-    <div className="container-fluid mt-5 mb-5">
-      <div className="row">
+    <div className="container mb-5 m-5">
+      <div className="row h-100 align-items-center">
 
         <div className="col-1"></div>
-        <div className="col-md-5 ">
+        {/* LEFT SIDE - IMAGE */}
+        <div className="col-md-5 d-none d-md-block p-0">
           <img
             src="/media/images/signup.png"
-            alt="signup"
-            className="img-fluid h-100 w-100"
+            alt="login"
+            className="img-fluid w-100 h-100"
             style={{ objectFit: "cover" }}
           />
         </div>
 
-        {/* FORM */}
-        <div className="col-md-5" style={{marginLeft:"90px"}}>
-          <div className="w-75">
-            <h2 className="mb-4 fw-bold">Create Account</h2>
+        {/* RIGHT SIDE - FORM */}
+        <div className="col-md-5 d-flex " style={{marginLeft:"90px"}}>
+          <div style={{ width: "350px" }}>
+            
+            <h2 className="mb-4 fw-bold text-center">Welcome Back</h2>
 
-            <form onSubmit={handleSignup}>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  className="form-control"
-                  placeholder="Full Name"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
+            <form onSubmit={handleLogin}>
+              
               <div className="mb-3">
                 <input
                   type="email"
@@ -87,29 +82,24 @@ function Signup() {
               </div>
 
               <button type="submit" className="btn btn-primary w-100">
-                Sign Up
+                Login
               </button>
             </form>
 
-           <p className="mt-3">
-            Already have an account?{" "}
-            <span
-                className="text-primary"
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate("/login")}
-            >
-                Login
-            </span>
+            <p className="mt-3 text-center">
+              Don’t have an account?{" "}
+              <Link to="/signup" className="text-primary">
+                Signup
+              </Link>
             </p>
+
           </div>
         </div>
         <div className="col-1"></div>
-        
-        
 
       </div>
     </div>
   );
 }
 
-export default Signup;
+export default Login;

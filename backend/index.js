@@ -238,17 +238,55 @@ app.get("/allpositions",async(req,res)=>{
   }
 })
 
-app.post("/newOrder",async(req,res)=>{
-  let newOrder=new OrdersModel({
-    name: req.body.name,
-    qty: req.body.qty,
-    price: req.body.price,
-    mode: req.body.mode,
-  });
-  newOrder.save();
-  res.send("data saved");
-})
+app.post("/newOrder", async (req, res) => {
+  const { name, qty, price, mode } = req.body;
 
+  // 1. Save order
+  await OrdersModel.create({ name, qty, price, mode });
+
+  // 2. Find position
+  let position = await PositionModel.findOne({ name });
+
+  if (position) {
+    // update existing
+    if (mode === "BUY") {
+      position.qty += qty;
+    } else {
+      position.qty -= qty;
+    }
+
+    position.price = price;
+    await position.save();
+
+  } else {
+    // create new (only for BUY)
+    if (mode === "BUY") {
+      await PositionModel.create({
+        product: "CNC",
+        name,
+        qty,
+        avg: price,
+        price,
+        day: "0%",
+        isDown: false,
+      });
+    }
+  }
+
+  res.send("Done ✅");
+});
+
+app.get("/newOrder", async (req, res) => {
+  try {
+    const orders = await OrdersModel.find();
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching orders" });
+  }
+});
+
+const authRoutes = require("./routes/authRoutes");
+app.use("/api/auth", authRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
