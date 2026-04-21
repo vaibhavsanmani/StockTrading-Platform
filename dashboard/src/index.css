@@ -304,6 +304,7 @@ hr {
   justify-content: space-evenly;
   margin-left: 20px;
   margin-top: -25px;
+  position: relative;
 }
 
 .profile .avatar {
@@ -327,6 +328,37 @@ hr {
   font-size: 0.8rem;
   font-weight: 300;
   margin-top: 16px;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 140px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+  padding: 8px 0;
+}
+
+.profile-dropdown a,
+.profile-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  color: rgb(55, 55, 55);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.profile-dropdown a:hover,
+.profile-dropdown button:hover {
+  background: rgb(245, 245, 245);
+  cursor: pointer;
 }
 
 /* sudo selectors */

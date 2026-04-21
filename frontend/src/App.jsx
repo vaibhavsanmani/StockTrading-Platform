@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Routes, Route, BrowserRouter} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './landing_page/home/HomePage';
 import Signup from './landing_page/signup/Signup';
 import Login from './landing_page/login/Login';
@@ -13,9 +13,9 @@ import PricingPage from './landing_page/pricing/PricingPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
-    <Navbar/>
-        <Routes>
+    <Router>
+      <Navbar />
+      <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<Signup/>} />
           <Route path="/login" element={<Login/>} />
@@ -27,6 +27,6 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       <Footer/>
-    </BrowserRouter>
+    </Router>
   );
 }

@@ -288,12 +288,15 @@ app.get("/newOrder", async (req, res) => {
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-mongoose.connect(process.env.MONGO_URI)
+const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/zerodha";
+console.log("Connecting to MongoDB:", mongoUri);
+
+mongoose.connect(mongoUri)
   .then(() => {
     console.log("MongoDB Connected ✅");
 
     app.listen(PORT, () => {
-      console.log("Server running on port 3002");
+      console.log(`Server running on port ${PORT}`);
     });
 
   })

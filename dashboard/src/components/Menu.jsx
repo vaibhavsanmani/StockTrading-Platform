@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Orders from "./Orders";
 import Holdings from "./Holdings";
 import Positions from "./Positions";
@@ -8,22 +8,37 @@ import Funds from "./Funds";
 import Apps from "./Apps";
 import Dashboard from "./Dashboard";
 
-
 const Menu = () => {
-
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const userName = localStorage.getItem("userName") || "USERID";
+  const initials = userName
+    .split(" ")
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   const handleMenuClick = (index) => {
     setSelectedMenu(index);
   };
 
   const handleProfileClick = () => {
-    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+    setIsProfileDropdownOpen((prev) => !prev);
   };
 
-  const menuClass='menu';
-  const activeMenuClass='active-menu';
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    setIsProfileDropdownOpen(false);
+    navigate("/login");
+  };
+
+  const menuClass = "menu";
+  const activeMenuClass = "active-menu";
 
   return (
     <div className="menu-container">
@@ -85,8 +100,44 @@ const Menu = () => {
         </ul>
         <hr />
         <div className="profile" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
+          <div className="avatar">{initials}</div>
+          <p className="username">{userName}</p>
+          {isProfileDropdownOpen && (
+            <div className="profile-dropdown" onClick={(event) => event.stopPropagation()}>
+              {!token ? (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setIsProfileDropdownOpen(false);
+                    }}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setIsProfileDropdownOpen(false);
+                    }}
+                  >
+                    Signup
+                  </Link>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleLogout();
+                  }}
+                >
+                  Logout
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
