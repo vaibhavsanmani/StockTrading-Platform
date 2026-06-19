@@ -1,11 +1,41 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Signup = () => {
-  const dashboardUrl = import.meta.env.VITE_DASHBOARD_URL ?? `${window.location.protocol}//${window.location.hostname}:5173/`;
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
-  const handleSubmit = (event) => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    window.location.href = dashboardUrl;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/signup",
+        formData
+      );
+
+      alert(response.data.message);
+
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Error saving user");
+    }
   };
 
   return (
@@ -15,32 +45,68 @@ const Signup = () => {
           <div className="card shadow-sm">
             <div className="card-body">
               <h1 className="h4 mb-3">Sign Up</h1>
-              <p className="text-muted">Create a new account to access the dashboard.</p>
+              <p className="text-muted">
+                Create a new account to access the dashboard.
+              </p>
+
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="signupName" className="form-label">
+                  <label htmlFor="name" className="form-label">
                     Full Name
                   </label>
-                  <input type="text" className="form-control" id="signupName" placeholder="Your name" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="name"
+                    placeholder="Your name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
+
                 <div className="mb-3">
-                  <label htmlFor="signupEmail" className="form-label">
+                  <label htmlFor="email" className="form-label">
                     Email address
                   </label>
-                  <input type="email" className="form-control" id="signupEmail" placeholder="you@example.com" />
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="email"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
+
                 <div className="mb-3">
-                  <label htmlFor="signupPassword" className="form-label">
+                  <label htmlFor="password" className="form-label">
                     Password
                   </label>
-                  <input type="password" className="form-control" id="signupPassword" placeholder="Create a password" />
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="password"
+                    placeholder="Create a password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
-                <button type="submit" className="btn btn-primary w-100">
+
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100"
+                >
                   Create Account
                 </button>
               </form>
+
               <div className="mt-3 text-center">
-                <Link to="/login">Already have an account? Login</Link>
+                <Link to="/login">
+                  Already have an account? Login
+                </Link>
               </div>
             </div>
           </div>

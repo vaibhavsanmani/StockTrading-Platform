@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 
 const Login = () => {
-  const dashboardUrl = import.meta.env.VITE_DASHBOARD_URL ?? `${window.location.protocol}//${window.location.hostname}:5173/`;
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    window.location.href = dashboardUrl;
+    
   };
 
   return (
