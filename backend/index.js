@@ -4,12 +4,20 @@ const mongoose = require('mongoose');
 const Holdingsmodel = require("./model/HoldingsModel");
 const PositionModel=require("./model/PositionsModel");
 const OrdersModel=require("./model/OrdersModel");
+// User model is handled in auth routes
 const bodyParser=require('body-parser');
 const cors=require('cors');
 
 const PORT= process.env.PORT || 3002;
 // const uri = process.env.MONGO_URL;
 const app = express();
+
+// Debug: log every incoming request to file to trace routing
+const fs = require('fs');
+app.use((req, res, next) => {
+  try { fs.appendFileSync('./requests.log', `${new Date().toISOString()} ${req.method} ${req.url}\n`); } catch (e) {}
+  next();
+});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -217,6 +225,27 @@ app.use(bodyParser.json());
 // await OrdersModel.insertMany(tempOrders);
 // res.send("!Done");
 // })
+const bcrypt = require('bcryptjs');
+const User = require('./model/UserModel');
+
+// Keep legacy POST /signup for frontends hitting /signup
+app.post('/signup', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) return res.status(400).json({ message: 'Missing required fields' });
+
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(400).json({ message: 'Email already in use' });
+
+    const hashed = await bcrypt.hash(password, 10);
+    const user = new User({ name, email, password: hashed });
+    await user.save();
+    res.status(201).json({ message: 'Account created successfully' });
+  } catch (err) {
+    console.log('Index Signup Error:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
 
 app.get("/allholdings", async (req, res) => {
   try {
@@ -287,10 +316,11 @@ app.get("/newOrder", async (req, res) => {
 
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
+// also mount auth routes at root so legacy frontend endpoint /signup works
+app.use("/", authRoutes);
 
 const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/zerodha";
 console.log("Connecting to MongoDB:", mongoUri);
-
 mongoose.connect(mongoUri)
   .then(() => {
     console.log("MongoDB Connected ✅");
